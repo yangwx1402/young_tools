@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 报表的execl文件名,文件类型 -->
+<config name="外媒数据" type="xlsx">
+<!-- sheet属性,sheet名称 sheet序号-->
+  <base name="外媒采集两会数据" index="2" >
+     <!-- 该sheet的数据源配置 -->
+     <datasource driver="com.mysql.jdbc.Driver" url="jdbc:mysql://news.jetyun.com:3306/ndp?useUnicode=true&amp;characterEncoding=UTF-8" user="root" password="SgeMeTi7xQw[A1o9"/>
+     <!-- 获取报表数据的sql语句 -->
+     <sql select="select distinct b.screen_name,replace(a.text,'\n','') as text ,a.created_at,c.retweet_count,c.favorite_count,'twitter' as type,concat('twitter.com/',b.upcode,'/status/',a.upcode) as url from twitter_tweets a,twitter_users b,twitter_tweet_trackings c 
+where a.created_at >? and (a.text like ? or a.text like ? or a.text like ? or a.text like ? or a.text like ?) and a.user_id = b.id and a.id=c.tweet_id 
+union 
+select distinct page.username as screen_name,post.message as text,post.created_at,post.shares_count as retweet_count,post.likes_count as favorite_count,'facebook' as type,concat('www.facebook.com/',replace(post.upcode,'_','/posts/'))  as url  from facebook_pages page,facebook_posts post where page.id=post.page_id and page.account_id in (2,12,50) 
+and post.created_at >? and (post.message like ? or post.message like ? or post.message like ? or post.message like ? or post.message like ?)
+ union select users.username as screen_name,videos.title as text,videos.created_at,videos.view_count as retweet_count,videos.favorite_count,'youtube' as type,''  as url from youtube_users users,youtube_videos videos where users.id=videos.user_id and videos.created_at > ? and
+ (videos.title like ? or videos.title like ? or videos.title like ? or videos.title like ? or videos.title like ?)
+"/>
+     <!-- sql参数 按序号传入 type分为int string double long-->
+     <param index="1" value="2015-03-07 00:00:00" type="string" name="date"/>
+     <param index="2" value="%两会%" type="string"/>
+     <param index="3" value="%TwoMeetings%" type="string"/>
+     <param index="4" value="%China%NPC%" type="string"/>
+     <param index="5" value="%NPC%CPPCC%" type="string"/>
+     <param index="6" value="%China%CPPCC%" type="string"/>
+     <param index="7" value="2015-03-07 00:00:00" type="string" name="date"/>
+     <param index="8" value="%两会%" type="string"/>
+     <param index="9" value="%TwoMeetings%" type="string"/>
+     <param index="10" value="%China%NPC%" type="string"/>
+     <param index="11" value="%NPC%CPPCC%" type="string"/>
+     <param index="12" value="%China%CPPCC%" type="string"/>
+     <param index="13" value="2015-03-07 00:00:00" type="string" name="date"/>
+     <param index="14" value="%两会%" type="string"/>
+     <param index="15" value="%TwoMeetings%" type="string"/>
+     <param index="16" value="%China%NPC%" type="string"/>
+     <param index="17" value="%NPC%CPPCC%" type="string"/>
+     <param index="18" value="%China%CPPCC%" type="string"/>
+     <!-- 报表展示的字段,按序号展示, -->
+     <field index="1" type="string" value="screen_name"/>
+     <field index="2" type="string" value="text"/>
+     <field index="3" type="string" value="created_at"/>
+     <field index="4" type="long" value="retweet_count"/>
+     <field index="5" type="long" value="favorite_count"/>
+     <field index="6" type="string" value="type"/>
+     <field index="7" type="string" value="url"/>
+  </base>
+ 
+ 
+ 
+ <base name="外媒采集自有账号数据" index="3" >
+     <!-- 该sheet的数据源配置 -->
+     <datasource driver="com.mysql.jdbc.Driver" url="jdbc:mysql://news.jetyun.com:3306/ndp?useUnicode=true&amp;characterEncoding=UTF-8" user="root" password="SgeMeTi7xQw[A1o9"/>
+     <!-- 获取报表数据的sql语句 -->
+     <sql select="select distinct users.screen_name,replace(tweets.text,'\n','') as text,tweets.created_at,tweets.retweet_count,tweets.favorite_count,'twitter' as type,concat('twitter.com/',users.upcode,'/status/',tweets.upcode) as url 
+     from twitter_users users,twitter_tweets tweets where users.id = tweets.user_id and (users.account_id = 2 or users.account_id = 50) and tweets.created_at > ? 
+     union select distinct page.username as screen_name,post.message as text,post.created_at,post.shares_count as retweet_count,post.likes_count as favorite_count,'facebook' as type,concat('www.facebook.com/',replace(post.upcode,'_','/posts/'))  as url  from facebook_pages page,facebook_posts post where page.id=post.page_id and page.account_id in (2,12,50) 
+and post.created_at >?
+     "/>
+     <!-- sql参数 按序号传入 type分为int string double long-->
+     <param index="1" value="2015-03-07 00:00:00" type="string" name="date"/>
+     <param index="2" value="2015-03-07 00:00:00" type="string" name="date"/>
+     <!-- 报表展示的字段,按序号展示, -->
+     <field index="1" type="string" value="screen_name"/>
+     <field index="2" type="string" value="text"/>
+     <field index="3" type="string" value="created_at"/>
+     <field index="4" type="long" value="retweet_count"/>
+     <field index="5" type="long" value="favorite_count"/>
+     <field index="6" type="string" value="type"/>
+     <field index="7" type="string" value="url"/>
+  </base>
+  
+  
+  <base name="外媒采集同业账号数据" index="4" >
+     <!-- 该sheet的数据源配置 -->
+     <datasource driver="com.mysql.jdbc.Driver" url="jdbc:mysql://news.jetyun.com:3306/ndp?useUnicode=true&amp;characterEncoding=UTF-8" user="root" password="SgeMeTi7xQw[A1o9"/>
+     <!-- 获取报表数据的sql语句 -->
+     <sql select="select distinct users.screen_name,replace(tweets.text,'\n','') as text,tweets.created_at,tweets.retweet_count,tweets.favorite_count,'twitter' as type,concat('twitter.com/',users.upcode,'/status/',tweets.upcode) as url 
+     from twitter_users users,twitter_tweets tweets where users.id = tweets.user_id and (users.account_id = 51 or users.account_id = 52) and tweets.created_at > ? "/>
+     <!-- sql参数 按序号传入 type分为int string double long-->
+     <param index="1" value="2015-03-07 00:00:00" type="string" name="date"/>
+     
+     <!-- 报表展示的字段,按序号展示, -->
+     <field index="1" type="string" value="screen_name"/>
+     <field index="2" type="string" value="text"/>
+     <field index="3" type="string" value="created_at"/>
+     <field index="4" type="long" value="retweet_count"/>
+     <field index="5" type="long" value="favorite_count"/>
+     <field index="6" type="string" value="type"/>
+     <field index="7" type="string" value="url"/>
+  </base>
+  
+  <base name="外媒采集全量数据" index="1" >
+     <!-- 该sheet的数据源配置 -->
+     <datasource driver="com.mysql.jdbc.Driver" url="jdbc:mysql://news.jetyun.com:3306/ndp?useUnicode=true&amp;characterEncoding=UTF-8" user="root" password="SgeMeTi7xQw[A1o9"/>
+     <!-- 获取报表数据的sql语句 -->
+     <sql select="select distinct users.screen_name,replace(tweets.text,'\n','') as text,tweets.created_at,tweets.retweet_count,tweets.favorite_count,'twitter' as type,concat('twitter.com/',users.upcode,'/status/',tweets.upcode) as url 
+     from twitter_users users,twitter_tweets tweets where users.id = tweets.user_id and tweets.created_at > ? 
+     union select distinct page.username as screen_name,post.message as text,post.created_at,post.shares_count as retweet_count,post.likes_count as favorite_count,'facebook' as type,concat('www.facebook.com/',replace(post.upcode,'_','/posts/'))  as url  from facebook_pages page,facebook_posts post where page.id=post.page_id and post.created_at >?
+     union select users.username as screen_name,videos.title as text,videos.created_at,videos.view_count as retweet_count,videos.favorite_count,'youtube' as type,'' as url  from youtube_users users,youtube_videos videos where users.id=videos.user_id and videos.created_at > ?
+     "/>
+     <!-- sql参数 按序号传入 type分为int string double long-->
+      <param index="1" value="2015-03-07 00:00:00" type="string" name="date"/>
+      <param index="2" value="2015-03-07 00:00:00" type="string" name="date"/>
+      <param index="3" value="2015-03-07 00:00:00" type="string" name="date"/>
+     
+     <!-- 报表展示的字段,按序号展示, -->
+     <field index="1" type="string" value="screen_name"/>
+     <field index="2" type="string" value="text"/>
+     <field index="3" type="string" value="created_at"/>
+     <field index="4" type="long" value="retweet_count"/>
+     <field index="5" type="long" value="favorite_count"/>
+     <field index="6" type="string" value="type"/>
+     <field index="7" type="string" value="url"/>
+  </base>
+</config>
